@@ -24,18 +24,17 @@ class EPuckController():
     def constraint_extension_controller(self, target_vel, th):
         # source lecture notes MAE 598: Multi Robot Systems (Robotarium GTech)
         cmd_vel = self.ext_mat @ self.rot_mat(-th) @ target_vel[:,np.newaxis]
-        return min(self.max_vel, cmd_vel[0]), min(self.max_omg, cmd_vel[1]) # vel, omg
+        # return limited linear and angular velocities
+        return min(self.max_vel, cmd_vel[0]), min(self.max_omg, cmd_vel[1])
 
     def get_wheel_commands(self, target_vel, curr_state):
         # target_vel: xd_cmd, yd_cmd
-        # curr_state: x, y, yaw, xd, yd, yawd
+        # curr_state: x, y, yaw
         th = curr_state[2]
         vel, omg = self.constraint_extension_controller(target_vel, th)
         return self.diff_drive_controller(vel, omg)
     
     def extension_state(self, state):
-        state[:,0] += self.extension*np.cos(state[:,3])
-        state[:,1] += self.extension*np.sin(state[:,3])
-        state[:,3] -= self.extension*np.sin(state[:,5])
-        state[:,4] += self.extension*np.cos(state[:,5])
+        state[:,0] += self.extension*np.cos(state[:,2])
+        state[:,1] += self.extension*np.sin(state[:,2])
         return state

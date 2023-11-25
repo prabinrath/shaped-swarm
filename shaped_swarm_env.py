@@ -8,6 +8,8 @@ class ShapedSwarmEnv():
         self.n_bots = env_config['n_bots']
         self.event_loop = asyncio.get_event_loop() 
         self.client = RemoteAPIClient()
+        # based on radius of e-puck, the control point is set as the point where
+        # the perpendicular bisector of the axle intersects the circumference of robot
         self.controller = EPuckController(35 * 1e-3)
         self.obs = None
 
@@ -32,18 +34,18 @@ class ShapedSwarmEnv():
     async def _get_swarm_state(self):
         # cheaply getting the ground truth positions and orientations of the bots from simulation
         # this localization should be processed from an overhead camera for closer to reality simulation
-        tasks = [self.sim.getObjectPosition(self.bots_handle[j], self.sim.handle_world) for j in range(self.n_bots)]
-        tasks += [self.sim.getObjectOrientation(self.bots_handle[j], self.sim.handle_world) for j in range(self.n_bots)]
+        tasks = [self.sim.getObjectPosition(self.bots_joints[j][0], self.sim.handle_world) for j in range(self.n_bots)]
+        tasks += [self.sim.getObjectPosition(self.bots_joints[j][1], self.sim.handle_world) for j in range(self.n_bots)]
         results = await asyncio.gather(*tasks)
-        positions = np.asarray(results[:int(len(results)/2)])
-        orientations = np.asarray(results[int(len(results)/2):])
-        print(orientations)
-        orientations += np.array([[0.0, -np.pi/2, np.pi]]) # global axis offset
-        tasks = [self.sim.getObjectVelocity(self.bots_handle[j]) for j in range(self.n_bots)]
-        results = await asyncio.gather(*tasks)
-        velocities = np.asarray([[lv[0], lv[1], av[2]] for lv, av in results])
-        # return x, y, yaw, xd, yd, yawd
-        return np.hstack((positions[:,:2], orientations[:,2,np.newaxis], velocities))
+        left_joint_positions = np.asarray(results[:int(len(results)/2)])
+        right_joint_positions = np.asarray(results[int(len(results)/2):])
+
+        positions = (left_joint_positions + right_joint_positions) / 2              
+        # retrive yaw angles in the range of -pi to pi       
+        orientations = np.arctan2(-(left_joint_positions[:,0] - right_joint_positions[:,0]),
+                                   (left_joint_positions[:,1] - right_joint_positions[:,1]))       
+        # return x, y, yaw
+        return np.hstack((positions[:,:2], orientations[:,np.newaxis]))
     
     async def _command_swarm(self, target_vels, curr_states):
         tasks = []
@@ -57,8 +59,6 @@ class ShapedSwarmEnv():
         self.sim = await self.client.getObject('sim')
         self.defaultIdlsFps = await self.sim.getInt32Param(self.sim.intparam_idle_fps)
         await self.sim.setInt32Param(self.sim.intparam_idle_fps, 0)
-        tasks = [self.sim.getObject(f'/ePuck[{j}]') for j in range(self.n_bots)]
-        self.bots_handle = await asyncio.gather(*tasks)
         tasks = [self.sim.getObject(f'/ePuck[{j}]/leftJoint') for j in range(self.n_bots)]
         left_joints = await asyncio.gather(*tasks)
         tasks = [self.sim.getObject(f'/ePuck[{j}]/rightJoint') for j in range(self.n_bots)]
@@ -70,3 +70,4 @@ class ShapedSwarmEnv():
     async def _close_simulation(self):
         await self.sim.stopSimulation()
         await self.sim.setInt32Param(self.sim.intparam_idle_fps, self.defaultIdlsFps)
+        
