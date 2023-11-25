@@ -18,7 +18,7 @@ class EPuckController():
     def diff_drive_controller(self, vel, omg):
         wheel_omg_l = (vel - omg*self.axle_length/2) / self.wheel_radius
         wheel_omg_r = (vel + omg*self.axle_length/2) / self.wheel_radius
-        return wheel_omg_l, wheel_omg_r
+        return wheel_omg_l[0], wheel_omg_r[0]
 
     def constraint_extension_controller(self, xd, yd, th):
         cmd_vel = self.ext_mat @ self.rot_mat(-th) @ np.array([[xd], [yd]])
@@ -26,14 +26,16 @@ class EPuckController():
         return min(self.max_vel, cmd_vel[0]), min(self.max_omg, cmd_vel[1])
 
     def get_wheel_commands(self, target_vel, curr_state):
-        xd, yd = target_vel
-        _, _, th = curr_state
+        # target_vel: xd_cmd, yd_cmd
+        # curr_state: x, y, yaw, xd, yd, yawd
+        xd, yd = target_vel[0], target_vel[1]
+        th = curr_state[2]
         vel, omg = self.constraint_extension_controller(xd, yd, th)
         return self.diff_drive_controller(vel, omg)
     
-    def track_state(self, positions, orientations):
-        positions = np.asarray(positions)
-        positions = np.asarray(orientations)
-        positions[:,0] += self.extension*np.cos(orientations)
-        positions[:,1] += self.extension*np.sin(orientations)
-        return np.hstack(positions, orientations)
+    def extension_state(self, state):
+        state[:,0] += self.extension*np.cos(state[:,3])
+        state[:,1] += self.extension*np.sin(state[:,3])
+        state[:,3] -= self.extension*np.sin(state[:,5])
+        state[:,4] += self.extension*np.cos(state[:,5])
+        return state

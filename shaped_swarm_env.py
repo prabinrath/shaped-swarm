@@ -1,6 +1,7 @@
 import asyncio
 from coppeliasim_zmqremoteapi_client.asyncio import RemoteAPIClient
 from e_puck_controller import EPuckController
+import numpy as np
 
 class ShapedSwarmEnv():
     def __init__(self, env_config):
@@ -21,11 +22,12 @@ class ShapedSwarmEnv():
         return False
     
     def step(self, target_vels):
-        if self.last_obs is not None:
+        if self.obs is not None:
             self.event_loop.run_until_complete(self._command_swarm(target_vels, self.obs))
         self.event_loop.run_until_complete(self.client.step())
-        positions, orientations = self.event_loop.run_until_complete(self._get_swarm_state())
-    
+        self.obs = self.event_loop.run_until_complete(self._get_swarm_state())
+        self.obs = self.controller.extension_state(self.obs)
+        return self.obs
 
     async def _get_swarm_state(self):
         # cheaply getting the ground truth positions and orientations of the bots from simulation
@@ -33,9 +35,15 @@ class ShapedSwarmEnv():
         tasks = [self.sim.getObjectPosition(self.bots_handle[j], self.sim.handle_world) for j in range(self.n_bots)]
         tasks += [self.sim.getObjectOrientation(self.bots_handle[j], self.sim.handle_world) for j in range(self.n_bots)]
         results = await asyncio.gather(*tasks)
-        positions = results[:len(results)/2]
-        orientations = results[len(results)/2:]
-        return positions, orientations
+        positions = np.asarray(results[:int(len(results)/2)])
+        orientations = np.asarray(results[int(len(results)/2):])
+        print(orientations)
+        orientations += np.array([[0.0, -np.pi/2, np.pi]]) # global axis offset
+        tasks = [self.sim.getObjectVelocity(self.bots_handle[j]) for j in range(self.n_bots)]
+        results = await asyncio.gather(*tasks)
+        velocities = np.asarray([[lv[0], lv[1], av[2]] for lv, av in results])
+        # return x, y, yaw, xd, yd, yawd
+        return np.hstack((positions[:,:2], orientations[:,2,np.newaxis], velocities))
     
     async def _command_swarm(self, target_vels, curr_states):
         tasks = []
