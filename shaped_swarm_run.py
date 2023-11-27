@@ -11,10 +11,11 @@ def main():
         count = 0
         while count <= SIM_TIME_SEC/SIM_STEP:
             target_vels = np.zeros((15, 2))
-            target_vels[:,0] = 0.05
-            target_vels[:,1] = 0.05
+            target_vels[:,0] = -0.05
+            target_vels[:,1] = -0.05
 
-            next_state = env.step(target_vels)
+            curr_state = env.step(target_vels)
+            print(curr_state[7])
             count+=1
 
 main()

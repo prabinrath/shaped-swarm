@@ -11,6 +11,7 @@ class ShapedSwarmEnv():
         # based on radius of e-puck, the control point is set as the point where
         # the perpendicular bisector of the axle intersects the circumference of robot
         self.controller = EPuckController(35 * 1e-3)
+        # self.controller = EPuckController(2 * 1e-3) # hard controller
         self.obs = None
 
     def __enter__(self):
@@ -70,4 +71,3 @@ class ShapedSwarmEnv():
     async def _close_simulation(self):
         await self.sim.stopSimulation()
         await self.sim.setInt32Param(self.sim.intparam_idle_fps, self.defaultIdlsFps)
-        
