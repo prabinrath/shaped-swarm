@@ -19,13 +19,13 @@ class EPuckController():
         # source https://wiki.ros.org/diff_drive_controller
         wheel_omg_l = (vel - omg*self.axle_length/2) / self.wheel_radius
         wheel_omg_r = (vel + omg*self.axle_length/2) / self.wheel_radius
-        return wheel_omg_l[0], wheel_omg_r[0]
+        return wheel_omg_l, wheel_omg_r
 
     def constraint_extension_controller(self, target_vel, th):
         # source lecture notes MAE 598: Multi Robot Systems (Robotarium GTech)
         cmd_vel = self.ext_mat @ self.rot_mat(-th) @ target_vel[:,np.newaxis]
         # return limited linear and angular velocities
-        return min(self.max_vel, cmd_vel[0]), min(self.max_omg, cmd_vel[1])
+        return min(self.max_vel, cmd_vel[0][0]), min(self.max_omg, cmd_vel[1][0])
 
     def get_wheel_commands(self, target_vel, curr_state):
         # target_vel: xd_cmd, yd_cmd
