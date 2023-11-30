@@ -7,7 +7,7 @@ class ImageSdf():
         assert img is not None, "file could not be read, check with os.path.exists()"
         _, img = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY_INV)
         kernel = np.ones((5,5),np.uint8)
-        img = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel, iterations=2)
+        img = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
         img = 255 - img
         self.sdf = cv2.distanceTransform(img, maskSize=cv2.DIST_MASK_PRECISE, distanceType=cv2.DIST_L2)
         self.sdf_img = (self.sdf/np.max(self.sdf)*255).astype(np.uint8)

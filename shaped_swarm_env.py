@@ -10,8 +10,8 @@ class ShapedSwarmEnv():
         self.client = RemoteAPIClient()
         # based on radius of e-puck, the control point is set as the point where
         # the perpendicular bisector of the axle intersects the circumference of robot
-        self.controller = EPuckController(35 * 1e-3)
-        # self.controller = EPuckController(2 * 1e-3) # hard controller
+        # self.controller = EPuckController(35 * 1e-3)
+        self.controller = EPuckController(2 * 1e-3) # hard controller
         self.obs = None
 
     def __enter__(self):

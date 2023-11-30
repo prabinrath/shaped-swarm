@@ -3,7 +3,7 @@ import numpy as np
 from img_sdf import ImageSdf
 
 def main():
-    imgsdf = ImageSdf('art/S.png')
+    imgsdf = ImageSdf('art/U.png', range=(1.5, 1.5))
     NUM_ROBOTS = 12
     env_config = dict(
         n_bots=NUM_ROBOTS,
