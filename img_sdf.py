@@ -24,12 +24,12 @@ class ImageSdf():
         x, y = max(min(x, 199), -199), max(min(y, 199), -199)
         x += 200
         y += 200
-        if self.sdf[x,y] < 5.0:
+        if self.sdf[x,y] < 1.0:
             return 0.0, 0.0
         gx = self.grad_x[x,y]
         gy = self.grad_y[x,y]
         norm = (gx**2+gy**2)**0.5
         gx = gx/norm
         gy = gy/norm
-        return -gx*self.scale, -gy*self.scale
+        return -gx*self.scale -self.scale*0.5*gy, -gy*self.scale +self.scale*0.5*gx
 

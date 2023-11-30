@@ -3,8 +3,6 @@ import numpy as np
 from img_sdf import ImageSdf
 from barrier_certificate import barrier_certificate
 
-# TODO: reduce text width in in image
-# TODO: implement cross product control law for bug motion
 
 def main():
     imgsdf = ImageSdf('art/U.png', range=(1.5, 1.5))
