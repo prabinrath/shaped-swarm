@@ -29,7 +29,10 @@ class ImageSdf():
         gx = self.grad_x[x,y]
         gy = self.grad_y[x,y]
         norm = (gx**2+gy**2)**0.5
-        gx = gx/norm
-        gy = gy/norm
-        return -gx*self.scale -self.scale*0.5*gy, -gy*self.scale +self.scale*0.5*gx
+        if norm > 0:
+            gx = gx/norm
+            gy = gy/norm
+            return -gx*self.scale -self.scale*0.5*gy, -gy*self.scale +self.scale*0.5*gx
+        else:
+            return 0.0, 0.0
 

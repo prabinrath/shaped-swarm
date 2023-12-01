@@ -3,7 +3,7 @@ from cvxopt.solvers import qp, options
 from cvxopt import matrix, sparse
 from scipy.special import comb
 
-def barrier_certificate(dxi, x, barrier_gain=100, safety_radius=0.05, magnitude_limit=0.25):
+def barrier_certificate(dxi, x, barrier_gain=100, safety_radius=0.1, magnitude_limit=0.25):
     """
     barrier_gain: double (controls how quickly agents can approach each other.  lower = slower)
     safety_radius: double (how far apart the agents will stay)
