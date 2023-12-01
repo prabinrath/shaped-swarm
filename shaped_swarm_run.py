@@ -11,13 +11,13 @@ def main():
         n_bots=NUM_ROBOTS,
     )
     with ShapedSwarmEnv(env_config) as env:
-        SIM_TIME_SEC = 60
         SIM_STEP = 50 * 1e-3
-        text = 'ASU'
+        text = 'A*S*U'
         for char in text:
             imgsdf = ImageSdf(f'art/{char}.png', range=(1.5, 1.5))
             count = 0
             target_vels = np.zeros((NUM_ROBOTS, 2))
+            SIM_TIME_SEC = 20 if char=='*' else 40
             while count <= SIM_TIME_SEC/SIM_STEP:
                 curr_state = env.step(target_vels)
                 for i in range(NUM_ROBOTS):
