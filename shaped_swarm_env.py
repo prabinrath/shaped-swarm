@@ -8,9 +8,8 @@ class ShapedSwarmEnv():
         self.n_bots = env_config['n_bots']
         self.event_loop = asyncio.get_event_loop() 
         self.client = RemoteAPIClient()
-        # based on radius of e-puck, the control point is set as the point where
-        # the perpendicular bisector of the axle intersects the circumference of robot
-        self.controller = EPuckController(35 * 1e-3)
+        # self.controller = EPuckController(35 * 1e-3) # easy controller
+        self.controller = EPuckController(10 * 1e-3) # moderate controller
         # self.controller = EPuckController(2 * 1e-3) # hard controller
         self.obs = None
 
@@ -45,6 +44,8 @@ class ShapedSwarmEnv():
         # retrive yaw angles in the range of -pi to pi       
         orientations = np.arctan2(-(left_joint_positions[:,0] - right_joint_positions[:,0]),
                                    (left_joint_positions[:,1] - right_joint_positions[:,1]))       
+        
+
         # return x, y, yaw
         return np.hstack((positions[:,:2], orientations[:,np.newaxis]))
     
