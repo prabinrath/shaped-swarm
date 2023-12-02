@@ -3,9 +3,7 @@ import numpy as np
 from img_sdf import ImageSdf
 from barrier_certificate import barrier_certificate
 
-
 def main():
-    
     NUM_ROBOTS = 12
     env_config = dict(
         n_bots=NUM_ROBOTS,
@@ -20,10 +18,15 @@ def main():
             SIM_TIME_SEC = 20 if char=='*' else 60
             while count <= SIM_TIME_SEC/SIM_STEP:
                 curr_state = env.step(target_vels)
-                for i in range(NUM_ROBOTS):
-                    gx, gy = imgsdf.get_gradient(curr_state[i][0], curr_state[i][1])
-                    target_vels[i,0] = gx
-                    target_vels[i,1] = gy
+                # nearest neighbor calculation
+                nearest = np.argmin(imgsdf.calculate_distances(curr_state), axis=1)
+
+                for i in range(NUM_ROBOTS):                   
+                    gx, gy = imgsdf.shape_gradient(curr_state[i][0], curr_state[i][1])
+                    gx_push, gy_push = imgsdf.coverage_gradient(curr_state[i], curr_state[nearest[i]])
+                    target_vels[i,0] = gx + 0.5*gx_push
+                    target_vels[i,1] = gy + 0.5*gy_push
+                
                 target_vels = barrier_certificate(target_vels.T, curr_state[:,:2].T).T
                 count+=1
 
