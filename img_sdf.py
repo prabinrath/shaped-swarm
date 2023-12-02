@@ -10,8 +10,8 @@ class ImageSdf():
         img = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
         img = 255 - img
         self.sdf = cv2.distanceTransform(img, maskSize=cv2.DIST_MASK_PRECISE, distanceType=cv2.DIST_L2)
-        self.sdf_img = (self.sdf/np.max(self.sdf)*255).astype(np.uint8)
-        # cv2.imshow('sdf', self.sdf_img)
+        # self.sdf_img = (self.sdf/np.max(self.sdf)*255).astype(np.uint8)
+        # cv2.imshow('sdf_img', self.sdf_img)
         # cv2.waitKey(0)
         self.grad_x = np.gradient(self.sdf, axis=0)
         self.grad_y = np.gradient(self.sdf, axis=1)

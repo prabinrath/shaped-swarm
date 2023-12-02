@@ -44,7 +44,6 @@ class ShapedSwarmEnv():
         # retrive yaw angles in the range of -pi to pi       
         orientations = np.arctan2(-(left_joint_positions[:,0] - right_joint_positions[:,0]),
                                    (left_joint_positions[:,1] - right_joint_positions[:,1]))       
-        
 
         # return x, y, yaw
         return np.hstack((positions[:,:2], orientations[:,np.newaxis]))
