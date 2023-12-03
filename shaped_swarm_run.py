@@ -10,12 +10,12 @@ def main():
     )
     with ShapedSwarmEnv(env_config) as env:
         SIM_STEP = 50 * 1e-3
-        text = 'A*S*U'
+        text = 'D'
         for char in text:
-            imgsdf = ImageSdf(f'art/asu/{char}.png', range=(2.0, 2.0))
+            imgsdf = ImageSdf(f'art/alphabets/{char}.png', range=(1.75, 1.75))
             count = 0
             target_vels = np.zeros((NUM_ROBOTS, 2))
-            SIM_TIME_SEC = 20 if char=='*' else 60
+            SIM_TIME_SEC = 20 if char=='*' else 30
             while count <= SIM_TIME_SEC/SIM_STEP:
                 curr_state = env.step(target_vels)
                 # nearest neighbor calculation
