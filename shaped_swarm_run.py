@@ -12,7 +12,7 @@ def main():
         SIM_STEP = 50 * 1e-3
         text = 'A*S*U'
         for char in text:
-            imgsdf = ImageSdf(f'art/{char}.png', range=(2.0, 2.0))
+            imgsdf = ImageSdf(f'art/asu/{char}.png', range=(2.0, 2.0))
             count = 0
             target_vels = np.zeros((NUM_ROBOTS, 2))
             SIM_TIME_SEC = 20 if char=='*' else 60

@@ -6,7 +6,7 @@ class ImageSdf():
     def __init__(self, img_path, scale = 0.05, range=(0.7, 0.7), coverage_r = 0.1):
         img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
         assert img is not None, "file could not be read, check with os.path.exists()"
-        assert img.shape[0] == img.shape[1], "expecting a square image"
+        assert img.shape[0] == img.shape[1] == 400, "expecting a square image of shape 400x400"
         self.img_res = img.shape[0]
         _, img = cv2.threshold(img, 127, 255, cv2.THRESH_BINARY_INV)
         kernel = np.ones((5,5),np.uint8)
