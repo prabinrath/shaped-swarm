@@ -10,7 +10,7 @@ def main():
     )
     with ShapedSwarmEnv(env_config) as env:
         SIM_STEP = 50 * 1e-3
-        text = 'p*r'
+        text = 'arizona'
         for char in text:
             if char=='*':
                 imgsdf = ImageSdf(f'art/alphabets/{char}.png', range=(2.0, 2.0))
