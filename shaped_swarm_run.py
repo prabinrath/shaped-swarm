@@ -10,7 +10,7 @@ def main():
     )
     with ShapedSwarmEnv(env_config) as env:
         SIM_STEP = 50 * 1e-3
-        text = 'arizona'
+        text = 'i'
         for char in text:
             if char=='*':
                 imgsdf = ImageSdf(f'art/alphabets/{char}.png', range=(2.0, 2.0))
@@ -19,9 +19,11 @@ def main():
                 imgsdf = ImageSdf(f'art/alphabets/{char}.png', range=(2.25, 2.25))
                 SIM_TIME_SEC = 30
             count = 0
+            robot_positions = []
             target_vels = np.zeros((NUM_ROBOTS, 2))
             while count <= SIM_TIME_SEC/SIM_STEP:
                 curr_state = env.step(target_vels)
+                robot_positions.append(curr_state)
                 # nearest neighbor calculation
                 nearest = np.argmin(imgsdf.calculate_distances(curr_state), axis=1)
 
@@ -33,5 +35,8 @@ def main():
                 
                 target_vels = barrier_certificate(target_vels.T, curr_state[:,:2].T).T
                 count+=1
+
+            robots_traj = np.vstack(robot_positions)
+            np.save('robots_traj.npy', robots_traj)
 
 main()

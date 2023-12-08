@@ -33,7 +33,7 @@ class ShapedSwarmEnv():
 
     async def _get_swarm_state(self):
         # cheaply getting the ground truth positions and orientations of the bots from simulation
-        # this localization should be processed from an overhead camera for closer to reality simulation
+        # this localization should be acquired from an external sensor for closer to reality simulation
         tasks = [self.sim.getObjectPosition(self.bots_joints[j][0], self.sim.handle_world) for j in range(self.n_bots)]
         tasks += [self.sim.getObjectPosition(self.bots_joints[j][1], self.sim.handle_world) for j in range(self.n_bots)]
         results = await asyncio.gather(*tasks)
