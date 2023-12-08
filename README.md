@@ -1,5 +1,5 @@
 # shaped-swarm
-This project formulates a multi-robot swarm controller for pattern formation from hand-drawn images. Images are created using the airbrush in [Paint](https://jspaint.app/) tool. Further, they are processed using morphological operations and distance transformation to obtain a 2D signed distance field (SDF). The gradient of this SDF is used to derive controllers for pattern formation. 
+This project develops a multi-robot swarm controller for pattern formation from hand-drawn images. Images are created using the airbrush in [Paint](https://jspaint.app/) tool. Further, they are processed using morphological operations and distance transformation to obtain a 2D signed distance field (SDF). The gradient of this SDF is used to derive controllers for pattern formation. 
 
 All experiments were conducted using [CoppeliaSim v4.6.0 (rev. 8)](https://www.coppeliarobotics.com/downloads).
 
