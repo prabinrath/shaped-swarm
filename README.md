@@ -2,9 +2,10 @@
 This project develops a multi-robot swarm controller for pattern formation from hand-drawn images. Images are created using the airbrush in [Paint](https://jspaint.app/) tool. Further, they are processed using morphological operations and distance transformation to obtain a 2D signed distance field (SDF). The gradient of this SDF is used to derive controllers for pattern formation. 
 
 All experiments were conducted using [CoppeliaSim v4.6.0 (rev. 8)](https://www.coppeliarobotics.com/downloads).
+Find the details in this [Technical Report](https://www.researchgate.net/publication/377237049_Signed_Distance_Field-based_Implicit_Navigation_for_Pattern_Generation_with_Robotic_Swarm).
 
-## Formation for word 'ASU'
-![Formation for word 'ASU'](./results/asu_pattern_video.gif)
+## Formation for the word 'ASU'
+![Formation for the word 'ASU'](./results/asu_pattern_video.gif)
 
 ### Signed Distance Field visualization
 From left to right (Hand-drawn image of the pattern, 2D SDF of the pattern, 3D surface plot of the normalized SDF). The robots can be thought of as if they are following the downhill slope of the 3D surface shown below.
